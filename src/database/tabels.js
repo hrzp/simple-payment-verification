@@ -5,12 +5,12 @@ module.exports = knex => {
         if (!exists) {
           return knex.schema.createTable("user", function(table) {
             table.increments("id").primary();
-            table.string("ssn", 10);
+            table.string("ssn", 10).unique();
             table.string("password", 128);
             table.string("first_name", 128);
             table.string("last_name", 128);
-            table.string("private_key", 256);
-            table.string("address", 256);
+            table.string("private_key", 256).unique();
+            table.string("address", 256).unique();
             table
               .integer("asset")
               .unsigned()
@@ -24,11 +24,12 @@ module.exports = knex => {
         if (!exists) {
           return knex.schema.createTable("transaction", function(table) {
             table.increments("id").primary();
+            table.string("hash", 64).unique();
             table.integer("from");
             table.integer("to");
             table.integer("amount").unsigned();
             table.integer("nonce");
-            table.string("signature", 512);
+            table.string("signature", 512).unique();
             table.string("node_signature", 1024);
             table.timestamp("create_at");
 

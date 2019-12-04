@@ -6,6 +6,7 @@ module.exports = app => {
   app.use(function(err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
+    console.log(err.message, "+-+-");
     res.locals.error = req.app.get("env") === "development" ? err : {};
 
     // render the error page
@@ -20,5 +21,9 @@ module.exports = app => {
     res
       .status(status.NOT_FOUND)
       .send({ message: "Not Found", hasError: true, data: {} });
+  });
+  app.use(function(err, req, res, next) {
+    console.error(err, "++++++++++++++++++++++++++++++++++++++");
+    res.status(400).send("Something broke!");
   });
 };

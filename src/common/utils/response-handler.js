@@ -13,6 +13,7 @@ class ResponseHandler {
     this.hasError = false;
     this.payload = data;
     this.message = message;
+    this.errors = null;
     this.statusCode = statusCode;
   }
 

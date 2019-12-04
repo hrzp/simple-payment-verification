@@ -1,5 +1,4 @@
 const bitcoin = require("bitcoinjs-lib");
-var bitcoinMessage = require("bitcoinjs-message");
 
 module.exports = knex => {
   return {
@@ -14,18 +13,39 @@ module.exports = knex => {
         .then(row => row);
       return user;
     },
+    async getSSN(ssn) {
+      let user = await knex("user")
+        .where({ ssn: ssn })
+        .first()
+        .select(["id", "ssn"])
+        .then(row => row);
+      return user;
+    },
+    async getAsset(address) {
+      let user = await knex("user")
+        .where({ address: address })
+        .first()
+        .select(["id", "asset"])
+        .then(row => row);
+      return user;
+    },
     async insertUser(ssn, password) {
       const keyPair = bitcoin.ECPair.makeRandom();
       const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey });
       let user = await knex("user")
-        .returning("id", "asset", "address")
+        .returning("*")
         .insert({
           ssn: ssn,
           password: password,
           private_key: keyPair.toWIF(),
           address: address
         })
-        .then(row => row);
+        .then(row => row)
+        .catch(function(err) {
+          // console.log(err, "*********");
+          // throw new Error("database failed to connect");
+          return { error: err.detail };
+        });
       // TODO: catch errors
       return user;
     }

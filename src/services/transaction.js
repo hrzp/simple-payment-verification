@@ -1,18 +1,20 @@
 const status = require("../config/status-codes");
 const BaseService = require("./base");
+const script = require("../scripts/transaction");
 
-class UserService extends BaseService {
-  async login(username, password) {
-    let result = await this.db.getUser(username, password);
-    if (result) {
-      this.responseHandler.setSuccessfulStatus(result);
+class TransactionService extends BaseService {
+  async submit(transaction) {
+    let trx = new script.Transaction(transaction);
+    let result = await trx.submit(this.db);
+    if (result.hasError) {
+      this.responseHandler.setFailureStatus(result.error, result.error);
     } else {
-      this.responseHandler.setFailureStatus(null, null, status.UNAUTHORIZED);
+      this.responseHandler.setSuccessfulStatus(result.payload);
     }
     return this.responseHandler;
   }
 
-  async register(ssn, password) {
+  async approval(ssn, password) {
     let isSSNExsit = await this.db.getSSN(ssn);
     if (isSSNExsit) {
       this.responseHandler.setFailureStatus(
@@ -28,4 +30,4 @@ class UserService extends BaseService {
   }
 }
 
-module.exports = UserService;
+module.exports = TransactionService;

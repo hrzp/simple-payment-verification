@@ -19,19 +19,13 @@ class Broadcast {
     }
   }
   sendTo(url, signInfo) {
-    console.log(this.userInfo);
     axios
       .post(url, {
         signInfo: signInfo,
         userInfo: this.userInfo
       })
-      .then(res => {
-        console.log(`statusCode: ${res.statusCode}`);
-        console.log(res);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+      .then(res => {})
+      .catch(error => {});
   }
   createSign() {
     let randomString = Math.random().toString();

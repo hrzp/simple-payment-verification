@@ -73,6 +73,7 @@ class UserService extends BaseService {
 
     let result = await this.db.submitUser(data.userInfo);
     this.responseHandler.setSuccessfulStatus(result);
+    return this.responseHandler;
   }
 }
 

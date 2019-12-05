@@ -7,6 +7,10 @@ function UserController(userService) {
     async register(req, res, next) {
       let result = await userService.register(req.body.ssn, req.body.password);
       res.status(result.statusCode).send(result);
+    },
+    async submit(req, res, next) {
+      let result = await userService.submit(req.body);
+      res.status(result.statusCode).send(result);
     }
   };
 }

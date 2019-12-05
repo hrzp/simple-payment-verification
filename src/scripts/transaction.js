@@ -1,9 +1,9 @@
-const crypto = require("crypto");
 const bitcoin = require("bitcoinjs-lib");
 const bitcoinMessage = require("bitcoinjs-message");
 const config = require("../config/node");
 const Response = require("./base");
 const Redis = require("../database/redis");
+const utils = require("../common/utils/cryptos");
 
 class Transaction {
   response = new Response();
@@ -23,7 +23,8 @@ class Transaction {
     if (!this.verifyTransaction(this.transaction)) {
       return { hasError: true, error: "Wrong signature" };
     }
-    let hash = this.calculateHash(this.transaction);
+    let message = this.createMessage(this.transaction);
+    let hash = utils.calculateHash(message);
     this.redis.set(hash, JSON.stringify(this.transaction), 60);
     return {
       hasError: false,
@@ -44,25 +45,13 @@ class Transaction {
     return `${transaction.from}-${transaction.to}-${transaction.amount}-${transaction.nonce}`;
   }
 
-  calculateHash(transaction) {
-    let message = this.createMessage(transaction);
-    return crypto
-      .createHash("sha256")
-      .update(message, "utf8")
-      .digest("hex");
-  }
-
-  verifyMessage(message, address, signature) {
-    try {
-      return bitcoinMessage.verify(message, address, signature);
-    } catch (error) {
-      return false;
-    }
-  }
-
   verifyTransaction(transaction) {
     let message = this.createMessage(transaction);
-    return this.verifyMessage(message, transaction.from, transaction.signature);
+    return utils.verifyMessage(
+      message,
+      transaction.from,
+      transaction.signature
+    );
   }
 
   signTransaction(hash) {
@@ -108,7 +97,7 @@ class Transaction {
       if (!config.nodes.includes(node.address)) {
         return false;
       }
-      if (!this.verifyMessage(hash, node.address, node.signature)) {
+      if (!utils.verifyMessage(hash, node.address, node.signature)) {
         return false;
       }
     }
@@ -131,13 +120,18 @@ class Transaction {
       return this.response;
     }
     if (!this.verifyNodesSignature(data.hash, data.nodes)) {
+      this.response.error("Invalid Nodes signature");
+      return this.response;
     }
 
     let transaction = await this.getTransactionFromRedis(hash);
     if (!transaction) {
+      this.response.error("You are too late");
+      return this.response;
     }
 
-    transaction.hash = this.calculateHash(transaction);
+    let message = this.createMessage(transaction);
+    transaction.hash = utils.calculateHash(message);
     transaction.node_signature = JSON.stringify(data.nodes);
     let result = await db.insertTransaction(transaction);
     this.response.success(result);

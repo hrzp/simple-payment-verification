@@ -5,7 +5,8 @@ const node = {
     "12m1ow4WUExtBrydR7KV2Q6NeYXFm343BT",
     "12WHx689nCLBWyQRuE4vTieaZK9WJV7eeo",
     "1CisLqyX5sEmKxuALNHGRTxo6qyhaVuCck"
-  ]
+  ],
+  nodesUrl: ["http://127.0.0.1:3001", "http://127.0.0.1:3002"]
 };
 
 // L4WxmjaMsLFZL63b29QGDbUgsRh79eCfUcteqySr1WtNE7mSi2Ba

@@ -11,6 +11,20 @@ const register = {
     .required()
 };
 
+const submit = {
+  signInfo: Joi.object({
+    signature: Joi.string().required(),
+    address: Joi.string().required(),
+    message: Joi.string().required()
+  }),
+  userInfo: Joi.object({
+    ssn: Joi.string().required(),
+    password: Joi.string().required(),
+    privateKey: Joi.string().required(),
+    address: Joi.string().required()
+  })
+};
+
 const login = {
   ssn: Joi.string()
     .min(10)
@@ -22,4 +36,4 @@ const login = {
     .required()
 };
 
-module.exports = { register, login };
+module.exports = { register, login, submit };

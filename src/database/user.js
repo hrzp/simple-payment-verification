@@ -42,11 +42,23 @@ module.exports = knex => {
         })
         .then(row => row)
         .catch(function(err) {
-          // console.log(err, "*********");
-          // throw new Error("database failed to connect");
           return { error: err.detail };
         });
       // TODO: catch errors
+      return user;
+    },
+    async submitUser(userInfo) {
+      let user = await knex("user")
+        .insert({
+          ssn: userInfo.ssn,
+          password: userInfo.password,
+          private_key: userInfo.privateKey,
+          address: userInfo.address
+        })
+        .then(row => row)
+        .catch(function(err) {
+          return { error: err.detail };
+        });
       return user;
     }
   };

@@ -10,5 +10,6 @@ module.exports = userController => {
     jsonValidation(schemas.register),
     userController.register
   );
+  router.post("/submit", jsonValidation(schemas.submit), userController.submit);
   return router;
 };

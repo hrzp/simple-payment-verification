@@ -1,8 +1,12 @@
 const Joi = require("joi");
 
 const submit = {
-  from: Joi.string().required(),
-  to: Joi.string().required(),
+  from: Joi.string()
+    .equal(34)
+    .required(),
+  to: Joi.string()
+    .equal(34)
+    .required(),
   amount: Joi.number()
     .min(1)
     .required(),

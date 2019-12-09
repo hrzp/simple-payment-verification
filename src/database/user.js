@@ -9,7 +9,7 @@ module.exports = knex => {
           password: password
         })
         .first()
-        .select(["id", "ssn", "address"])
+        .select(["id", "private_key", "address", "asset"])
         .then(row => row);
       return user;
     },
@@ -27,6 +27,7 @@ module.exports = knex => {
         .first()
         .select(["id", "asset"])
         .then(row => row);
+        console.log("user asset", user, address)
       return user;
     },
     async insertUser(ssn, password) {

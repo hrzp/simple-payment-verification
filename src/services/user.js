@@ -10,18 +10,17 @@ class UserService extends BaseService {
     if (result) {
       this.responseHandler.setSuccessfulStatus(result);
     } else {
-      this.responseHandler.setFailureStatus(null, null, status.UNAUTHORIZED);
+      this.responseHandler.setFailureStatus( null,'Wrong username or password', status.UNAUTHORIZED);
     }
     return this.responseHandler;
   }
-
   async register(ssn, password) {
     let isSSNExsit = await this.db.getSSN(ssn);
     if (isSSNExsit) {
       this.responseHandler.setFailureStatus(
         ["SSN exsit"],
         "Duplicate Entry",
-        status.BAD_REQUEST
+        status.SUCCESS
       );
     } else {
       let result = await this.db.insertUser(ssn, password);
@@ -37,13 +36,12 @@ class UserService extends BaseService {
     }
     return this.responseHandler;
   }
-
   async submit(data) {
     if (!config.nodes.includes(data.signInfo.address)) {
       this.responseHandler.setFailureStatus(
         ["Wrong address"],
         "Bad data",
-        status.BAD_REQUEST
+        status.SUCCESS
       );
       return this.responseHandler;
     }
@@ -56,7 +54,7 @@ class UserService extends BaseService {
       this.responseHandler.setFailureStatus(
         ["Wrong Info"],
         "Bad data",
-        status.BAD_REQUEST
+        status.SUCCESS
       );
       return this.responseHandler;
     }
@@ -66,13 +64,22 @@ class UserService extends BaseService {
       this.responseHandler.setFailureStatus(
         ["SSN exsit"],
         "Duplicate Entry",
-        status.BAD_REQUEST
+        status.SUCCESS
       );
       return this.responseHandler;
     }
 
     let result = await this.db.submitUser(data.userInfo);
     this.responseHandler.setSuccessfulStatus(result);
+    return this.responseHandler;
+  }
+  async getAsset(data) {
+    let result = await this.db.getAsset(data.address);
+    if (result) {
+      this.responseHandler.setSuccessfulStatus(result);
+    } else {
+      this.responseHandler.setFailureStatus( null,'Wrong address', status.BAD_REQUEST);
+    }
     return this.responseHandler;
   }
 }

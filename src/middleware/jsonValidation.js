@@ -21,7 +21,7 @@ const jsonValidation = schema => {
       status.BAD_REQUEST
     );
 
-    res.status(status.BAD_REQUEST).send(responseHandler);
+    res.status(status.SUCCESS).send(responseHandler);
   };
 };
 module.exports = jsonValidation;

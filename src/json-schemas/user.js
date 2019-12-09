@@ -36,4 +36,9 @@ const login = {
     .required()
 };
 
-module.exports = { register, login, submit };
+const getAsset = {
+  address: Joi.string()
+    .required()
+};
+
+module.exports = { register, login, submit, getAsset };
